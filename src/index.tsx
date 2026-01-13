@@ -1,9 +1,10 @@
-import { Form, LocalStorage } from "@raycast/api";
+import { Detail, LocalStorage, ActionPanel, Action, Form } from "@raycast/api";
 import { useEffect, useState } from "react";
 
 export default function Command() {
   const [text, setText] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     LocalStorage.getItem<string>("scratchpad").then((value) => {
@@ -13,17 +14,49 @@ export default function Command() {
   }, []);
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && isEditing) {
       const timer = setTimeout(() => {
         LocalStorage.setItem("scratchpad", text);
-      }, 500);
+      }, 200);
       return () => clearTimeout(timer);
     }
-  }, [text, isLoading]);
+  }, [text, isLoading, isEditing]);
+
+  if (isEditing) {
+    return (
+      <Form
+        actions={
+          <ActionPanel>
+            <Action
+              title="Done Editing"
+              onAction={() => setIsEditing(false)}
+              shortcut={{ modifiers: ["cmd"], key: "return" }}
+            />
+          </ActionPanel>
+        }
+      >
+        <Form.TextArea
+          id="scratchpad"
+          value={text}
+          onChange={setText}
+          placeholder="Type here... Cmd+Enter to view"
+        />
+      </Form>
+    );
+  }
 
   return (
-    <Form isLoading={isLoading}>
-      <Form.TextArea id="scratchpad" value={text} onChange={setText} />
-    </Form>
+    <Detail
+      isLoading={isLoading}
+      markdown={text || "Press Enter to start typing"}
+      actions={
+        <ActionPanel>
+          <Action
+            title="Edit"
+            onAction={() => setIsEditing(true)}
+          />
+        </ActionPanel>
+      }
+    />
   );
 }
