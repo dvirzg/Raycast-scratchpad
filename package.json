@@ -3,7 +3,7 @@
   "name": "scratchpad",
   "title": "Scratchpad",
   "description": "A minimal scratchpad with autosave",
-  "icon": "command-icon.png",
+  "icon": "assets/command-icon.png",
   "author": "dvirzagury",
   "license": "MIT",
   "commands": [
@@ -11,7 +11,8 @@
       "name": "index",
       "title": "Scratchpad",
       "description": "Open scratchpad",
-      "mode": "view"
+      "mode": "view",
+      "icon": "assets/command-icon.png"
     }
   ],
   "dependencies": {
